@@ -19,6 +19,22 @@ class Person:
         If Person survives, they become vaccinated and they have no infection (set the vaccinated attibute to True and the infection to None)
         Return True if they survived the infection and False if they did not. 
         '''
+        survival_chance = random.random()
 
-        #TODO: finish this method
-        pass
+        if survival_chance < self.infection.mortality_num:
+            self.is_alive = False
+            print(f"Died: {survival_chance}")
+            return False
+        else:
+            self.is_vaccinated = True
+            self.infection = None
+            return True
+
+
+# Testing function
+# virus = Virus("Ebola", 20, 0.6)
+
+# for _ in range(10):
+#     person = Person(False, virus)
+#     person.did_survive_infection()
+
