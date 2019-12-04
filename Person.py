@@ -23,7 +23,6 @@ class Person:
 
         if survival_chance < self.infection.mortality_num:
             self.is_alive = False
-            print(f"Died: {survival_chance}")
             return False
         else:
             self.is_vaccinated = True

@@ -28,25 +28,32 @@ class Simulation:
         '''Creates the population (a list of Person objects) consisting of initial infected people, initial healthy non-vaccinated people, and 
         initial healthy vaccinated people. Adds them to the population list'''
 
-        for i in range(self.initial_infected):
+        for _ in range(self.initial_infected):
         	person = Person(False, virus)
         	self.population.append(person)
 
-        for i in range(self.initial_healthy):
+        for _ in range(self.initial_healthy):
             person = Person(False, None)
             self.population.append(person)
 
-        for i in range(self.initial_vaccinated):
+        for _ in range(self.initial_vaccinated):
             person = Person(True, None)
             self.population.append(person)
         	
     def print_population(self):
         '''Prints out every person in the population and their current attributes'''
-        #TODO: finish this method
+        for person in self.population:
+            print(f"Alive: {person.is_alive}")
+            print(f"Vaccinated: {person.is_vaccinated}")
+            if person.infection:
+                print(f"Infection: {person.infection.name}")
+            else:
+                print("Not infected")
 
     def get_infected(self):
         '''Gets all the infected people from the population and returns them as a list'''
-        #TODO: finish this method
+        infected = [person for person in self.population if person.infection is not None]
+        return infected
 
 
     def simulation_should_continue(self):
@@ -55,7 +62,17 @@ class Simulation:
         If everyone in the population is vaccinated return False
         If there are no more infected people left and everyone is either vaccinated or dead return False
         In all other cases return True'''
-        #TODO: finish this method
+        all_dead = self.total_dead >= self.population_size - self.total_vaccinated
+        all_vaccinated = self.total_vaccinated >= self.population_size - self.total_dead
+        infected = self.get_infected()
+
+        if all_dead or all_vaccinated:
+            return False
+
+        if not infected and (all_dead or all_vaccinated):
+            return False
+
+        return True
         
 
     def run(self):
@@ -69,7 +86,6 @@ class Simulation:
         self.print_population()
         
         time_step_counter = 0
-        should_continue = True
 
         self.file_writer.init_file(self.virus, self.population_size, self.initial_vaccinated, self.initial_healthy, self.initial_infected)
 
@@ -92,7 +108,15 @@ class Simulation:
         Call the did_survive_infection() method
         if it returns false then the person is no longer alive, does not have an infection and one is added to total dead
         if it returns true then the person no longer has an infection and is vaccinated, one is added to total vaccinated'''
-        #TODO: finish this method
+        for person in infected:
+            if person.did_survive_infection():
+                person.infection = None
+                person.is_vaccinated = True
+                self.total_vaccinated += 1
+            else:
+                person.is_alive = False
+                person.infection = None
+                self.total_dead += 1
             
 
 
@@ -101,11 +125,10 @@ class Simulation:
 
         for infected_person in infected:
 
-            for i in range(10):
-                #TODO: get a random index for the population list
-                #TODO: using the random index get a random person from the population
-                #TODO: call interaction() with the current infected person and the random person
-                pass
+            for _ in range(10):
+                index = random.randint(0, len(self.population) - 1)
+                random_person = self.population[index]
+                self.interaction(infected_person, random_person)
 
 
     def interaction(self, infected, random_person):
@@ -116,28 +139,42 @@ class Simulation:
             generate a random float between 0 and 1
             if the random float is less then the infected person's virus reproduction number then the random person is infected
             othersie the random person is vaccinated and one is added to the total vaccinated'''
-        #TODO: finish this method
-        
 
+        if infected == random_person:
+            return
+        elif not random_person.is_alive:
+            return
+        elif random_person.is_vaccinated:
+            return
+        elif random_person.infection is not None:
+            return
+        else:
+            vacc_chance = random.random()
+            repro_num = infected.infection.reproduction_num
 
-        
-
+            if vacc_chance < repro_num:
+                random_person.infection = infected.infection
+            else:
+                random_person.is_vaccinated = True
+                self.total_vaccinated += 1
 
 if __name__ == "__main__":
 
     #Set up the initial simulations values
-    virus_name = "Malaise"
-    reproduction_num = 0.20
-    mortality_num = .99
+    virus_name = "Ebola"
+    reproduction_num = 0.60
+    mortality_num = 0.70
 
     initial_healthy = 10
-    initial_vaccinated = 5
+    initial_vaccinated = 2
 
     initial_infected = 1
 
     virus = Virus(virus_name, reproduction_num, mortality_num)
 
     simulation = Simulation(initial_vaccinated, initial_infected, initial_healthy, virus, "results.txt")
+    simulation2 = Simulation(10, 3, 87, virus, "results2.txt")
 
     #run the simulation
     simulation.run()
+    simulation2.run()
