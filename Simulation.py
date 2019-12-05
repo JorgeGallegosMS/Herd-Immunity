@@ -66,10 +66,6 @@ class Simulation:
         all_vaccinated = self.total_vaccinated == self.population_size
         infected = self.get_infected()
 
-        print(all_dead)
-        print(all_vaccinated)
-        print(infected)
-
         if all_dead or all_vaccinated:
             return False
 

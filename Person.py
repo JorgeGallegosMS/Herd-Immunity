@@ -28,12 +28,3 @@ class Person:
             self.is_vaccinated = True
             self.infection = None
             return True
-
-
-# Testing function
-# virus = Virus("Ebola", 20, 0.6)
-
-# for _ in range(10):
-#     person = Person(False, virus)
-#     person.did_survive_infection()
-
