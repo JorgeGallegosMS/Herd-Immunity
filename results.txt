@@ -1,10 +1,10 @@
 Simulation for virus: Ebola
 Reproduction Number: 0.6, Mortality Number: 0.7
-Population Size: 13
-Initial Vaccinated: 2
+Population Size: 16
+Initial Vaccinated: 5
 Initial Healthy: 10
 Initial Infected: 1
 
 Simulation Ended after 3 turns
-Total Dead: 2
-Total Vaccinated: 11
+Total Dead: 7
+Total Vaccinated: 9

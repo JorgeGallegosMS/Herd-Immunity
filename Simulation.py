@@ -62,14 +62,18 @@ class Simulation:
         If everyone in the population is vaccinated return False
         If there are no more infected people left and everyone is either vaccinated or dead return False
         In all other cases return True'''
-        all_dead = self.total_dead >= self.population_size - self.total_vaccinated
-        all_vaccinated = self.total_vaccinated >= self.population_size - self.total_dead
+        all_dead = self.total_dead == self.population_size
+        all_vaccinated = self.total_vaccinated == self.population_size
         infected = self.get_infected()
+
+        print(all_dead)
+        print(all_vaccinated)
+        print(infected)
 
         if all_dead or all_vaccinated:
             return False
 
-        if not infected and (all_dead or all_vaccinated):
+        if not infected:
             return False
 
         return True
@@ -126,7 +130,7 @@ class Simulation:
         for infected_person in infected:
 
             for _ in range(10):
-                index = random.randint(0, len(self.population) - 1)
+                index = random.randint(0, self.population_size - 1)
                 random_person = self.population[index]
                 self.interaction(infected_person, random_person)
 
@@ -148,6 +152,8 @@ class Simulation:
             return
         elif random_person.infection is not None:
             return
+        elif random_person.infection == virus:
+            return
         else:
             vacc_chance = random.random()
             repro_num = infected.infection.reproduction_num
@@ -166,14 +172,14 @@ if __name__ == "__main__":
     mortality_num = 0.70
 
     initial_healthy = 10
-    initial_vaccinated = 2
+    initial_vaccinated = 5
 
     initial_infected = 1
 
     virus = Virus(virus_name, reproduction_num, mortality_num)
 
     simulation = Simulation(initial_vaccinated, initial_infected, initial_healthy, virus, "results.txt")
-    simulation2 = Simulation(10, 3, 87, virus, "results2.txt")
+    simulation2 = Simulation(10, 2, 100, virus, "results2.txt")
 
     #run the simulation
     simulation.run()
